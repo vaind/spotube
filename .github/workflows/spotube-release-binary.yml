@@ -124,7 +124,7 @@ jobs:
           path: ${{matrix.files}}
 
       - name: Debug With SSH When fails
-        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        # if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
