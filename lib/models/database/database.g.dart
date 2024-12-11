@@ -5887,7 +5887,8 @@ final class $$PlaylistTableTableReferences extends BaseReferences<_$AppDatabase,
       db.audioPlayerStateTable.createAlias($_aliasNameGenerator(
           db.playlistTable.audioPlayerStateId, db.audioPlayerStateTable.id));
 
-  $$AudioPlayerStateTableTableProcessedTableManager get audioPlayerStateId {
+  $$AudioPlayerStateTableTableProcessedTableManager? get audioPlayerStateId {
+    if ($_item.audioPlayerStateId == null) return null;
     final manager = $$AudioPlayerStateTableTableTableManager(
             $_db, $_db.audioPlayerStateTable)
         .filter((f) => f.id($_item.audioPlayerStateId!));
@@ -6213,7 +6214,8 @@ final class $$PlaylistMediaTableTableReferences extends BaseReferences<
       db.playlistTable.createAlias($_aliasNameGenerator(
           db.playlistMediaTable.playlistId, db.playlistTable.id));
 
-  $$PlaylistTableTableProcessedTableManager get playlistId {
+  $$PlaylistTableTableProcessedTableManager? get playlistId {
+    if ($_item.playlistId == null) return null;
     final manager = $$PlaylistTableTableTableManager($_db, $_db.playlistTable)
         .filter((f) => f.id($_item.playlistId!));
     final item = $_typedResult.readTableOrNull(_playlistIdTable($_db));

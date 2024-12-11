@@ -53,12 +53,8 @@ mixin _$UserPreferences {
   bool get endlessPlayback => throw _privateConstructorUsedError;
   bool get enableConnect => throw _privateConstructorUsedError;
 
-  /// Serializes this UserPreferences to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of UserPreferences
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $UserPreferencesCopyWith<UserPreferences> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -114,8 +110,6 @@ class _$UserPreferencesCopyWithImpl<$Res, $Val extends UserPreferences>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of UserPreferences
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -296,8 +290,6 @@ class __$$UserPreferencesImplCopyWithImpl<$Res>
       _$UserPreferencesImpl _value, $Res Function(_$UserPreferencesImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of UserPreferences
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -613,7 +605,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
                 other.enableConnect == enableConnect));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
@@ -643,9 +635,7 @@ class _$UserPreferencesImpl implements _UserPreferences {
         enableConnect
       ]);
 
-  /// Create a copy of UserPreferences
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$UserPreferencesImplCopyWith<_$UserPreferencesImpl> get copyWith =>
@@ -754,11 +744,8 @@ abstract class _UserPreferences implements UserPreferences {
   bool get endlessPlayback;
   @override
   bool get enableConnect;
-
-  /// Create a copy of UserPreferences
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$UserPreferencesImplCopyWith<_$UserPreferencesImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -825,13 +812,8 @@ mixin _$PlaybackHistoryItem {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
-
-  /// Serializes this PlaybackHistoryItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $PlaybackHistoryItemCopyWith<PlaybackHistoryItem> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -855,8 +837,6 @@ class _$PlaybackHistoryItemCopyWithImpl<$Res, $Val extends PlaybackHistoryItem>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -893,8 +873,6 @@ class __$$PlaybackHistoryPlaylistImplCopyWithImpl<$Res>
       $Res Function(_$PlaybackHistoryPlaylistImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -947,13 +925,11 @@ class _$PlaybackHistoryPlaylistImpl implements PlaybackHistoryPlaylist {
                 other.playlist == playlist));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, date, playlist);
 
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$PlaybackHistoryPlaylistImplCopyWith<_$PlaybackHistoryPlaylistImpl>
@@ -1047,11 +1023,8 @@ abstract class PlaybackHistoryPlaylist implements PlaybackHistoryItem {
   @override
   DateTime get date;
   PlaylistSimple get playlist;
-
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$PlaybackHistoryPlaylistImplCopyWith<_$PlaybackHistoryPlaylistImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1075,8 +1048,6 @@ class __$$PlaybackHistoryAlbumImplCopyWithImpl<$Res>
       $Res Function(_$PlaybackHistoryAlbumImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1128,13 +1099,11 @@ class _$PlaybackHistoryAlbumImpl implements PlaybackHistoryAlbum {
             (identical(other.album, album) || other.album == album));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, date, album);
 
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$PlaybackHistoryAlbumImplCopyWith<_$PlaybackHistoryAlbumImpl>
@@ -1229,11 +1198,8 @@ abstract class PlaybackHistoryAlbum implements PlaybackHistoryItem {
   @override
   DateTime get date;
   AlbumSimple get album;
-
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$PlaybackHistoryAlbumImplCopyWith<_$PlaybackHistoryAlbumImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1257,8 +1223,6 @@ class __$$PlaybackHistoryTrackImplCopyWithImpl<$Res>
       $Res Function(_$PlaybackHistoryTrackImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1310,13 +1274,11 @@ class _$PlaybackHistoryTrackImpl implements PlaybackHistoryTrack {
             (identical(other.track, track) || other.track == track));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, date, track);
 
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$PlaybackHistoryTrackImplCopyWith<_$PlaybackHistoryTrackImpl>
@@ -1411,11 +1373,8 @@ abstract class PlaybackHistoryTrack implements PlaybackHistoryItem {
   @override
   DateTime get date;
   Track get track;
-
-  /// Create a copy of PlaybackHistoryItem
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$PlaybackHistoryTrackImplCopyWith<_$PlaybackHistoryTrackImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

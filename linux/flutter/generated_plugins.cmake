@@ -11,6 +11,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   media_kit_libs_linux
   open_file_linux
   screen_retriever_linux
+  sentry_flutter
   sqlite3_flutter_libs
   system_theme
   tray_manager

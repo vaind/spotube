@@ -43,7 +43,6 @@ class $AssetsTutorialGen {
 class Assets {
   Assets._();
 
-  static const String license = 'LICENSE';
   static const AssetGenImage albumPlaceholder =
       AssetGenImage('assets/album-placeholder.png');
   static const AssetGenImage bengaliPatternsBg =
@@ -61,6 +60,8 @@ class Assets {
       AssetGenImage('assets/spotube-hero-banner.png');
   static const AssetGenImage spotubeLogoForeground =
       AssetGenImage('assets/spotube-logo-foreground.jpg');
+  static const AssetGenImage spotubeLogoMacos =
+      AssetGenImage('assets/spotube-logo-macos.png');
   static const AssetGenImage spotubeLogoBmp =
       AssetGenImage('assets/spotube-logo.bmp');
   static const String spotubeLogoIco = 'assets/spotube-logo.ico';
@@ -93,7 +94,6 @@ class Assets {
 
   /// List of all assets
   static List<dynamic> get values => [
-        license,
         albumPlaceholder,
         bengaliPatternsBg,
         branding,
@@ -104,6 +104,7 @@ class Assets {
         placeholder,
         spotubeHeroBanner,
         spotubeLogoForeground,
+        spotubeLogoMacos,
         spotubeLogoBmp,
         spotubeLogoIco,
         spotubeLogoPng,
@@ -124,16 +125,9 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName);
 
   final String _assetName;
-
-  final Size? size;
-  final Set<String> flavors;
 
   Image image({
     Key? key,
@@ -153,7 +147,7 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = true,
+    bool gaplessPlayback = false,
     bool isAntiAlias = false,
     String? package,
     FilterQuality filterQuality = FilterQuality.low,

@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/initializers.dart';
@@ -115,17 +116,21 @@ Future<void> main(List<String> rawArgs) async {
       await WindowManagerTools.initialize();
     }
 
-    runApp(
-      ProviderScope(
-        overrides: [
-          databaseProvider.overrideWith((ref) => database),
-        ],
-        observers: const [
-          AppLoggerProviderObserver(),
-        ],
-        child: const Spotube(),
-      ),
-    );
+    SentryFlutter.init((options) {
+      options.dsn =
+          'https://e85b375ffb9f43cf8bdf9787768149e0@o447951.ingest.sentry.io/5428562';
+      options.experimental.replay.sessionSampleRate = 1.0;
+      options.debug = false;
+    },
+        appRunner: () => runApp(ProviderScope(
+              overrides: [
+                databaseProvider.overrideWith((ref) => database),
+              ],
+              observers: const [
+                AppLoggerProviderObserver(),
+              ],
+              child: const SentryWidget(child: Spotube()),
+            )));
   });
 }
 
