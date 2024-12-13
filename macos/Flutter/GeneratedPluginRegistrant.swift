@@ -22,7 +22,7 @@ import path_provider_foundation
 import screen_retriever_macos
 import sentry_flutter
 import shared_preferences_foundation
-import sqflite
+import sqflite_darwin
 import sqlite3_flutter_libs
 import system_theme
 import tray_manager
