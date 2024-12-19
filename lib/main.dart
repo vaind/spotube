@@ -120,7 +120,7 @@ Future<void> main(List<String> rawArgs) async {
       options.dsn =
           'https://e85b375ffb9f43cf8bdf9787768149e0@o447951.ingest.sentry.io/5428562';
       options.experimental.replay.sessionSampleRate = 1.0;
-      options.debug = false;
+      options.debug = kDebugMode;
     },
         appRunner: () => runApp(ProviderScope(
               overrides: [
