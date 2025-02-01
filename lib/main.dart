@@ -17,7 +17,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/initializers.dart';
@@ -134,16 +133,10 @@ Future<void> main(List<String> rawArgs) async {
       observers: const [
         AppLoggerProviderObserver(),
       ],
-      child: RepaintBoundary(
-    key: globalKey,
-    child: const Spotube()),
+      child: RepaintBoundary(key: globalKey, child: const Spotube()),
     ));
   });
-  Future.delayed(const Duration(milliseconds: 1), () {
-    SchedulerBinding.instance.addPersistentFrameCallback((_) {
-      capture();
-    });
-  });
+  SchedulerBinding.instance.addPostFrameCallback(capture);
 }
 
 final globalKey = GlobalKey();
@@ -158,7 +151,10 @@ final Future<String> screenshotsDir =
 });
 List<Rect>? prevPositions;
 
-void capture() {
+void capture(Duration _) {
+  SchedulerBinding.instance.addPostFrameCallback(capture);
+  final timestamp = DateTime.now().millisecondsSinceEpoch;
+
   final context = globalKey.currentContext;
   final renderObject = context?.findRenderObject() as RenderRepaintBoundary?;
   if (renderObject == null) {
@@ -168,7 +164,8 @@ void capture() {
   final futureImage = renderObject.toImage();
   final walker = WidgetWalker();
   walker.obscure(root: renderObject, context: context!);
-  final timestamp = DateTime.now().millisecondsSinceEpoch;
+  print(
+      "screenshot $timestamp blocking ${DateTime.now().millisecondsSinceEpoch - timestamp}ms");
 
   if (!listEquals(prevPositions, walker.items)) {
     futureImage.then((image) async {
@@ -203,8 +200,10 @@ void capture() {
       } finally {
         picture.dispose();
       }
+      print(
+          "screenshot $timestamp finished ${DateTime.now().millisecondsSinceEpoch - timestamp}ms");
     });
-    prevPositions = walker.items;
+    // prevPositions = walker.items;
   }
 }
 
@@ -235,6 +234,7 @@ class WidgetWalker {
     final widget = element.widget;
 
     if (widget is Text) {
+      assert(element.renderObject is RenderBox);
       final RenderBox renderBox = element.renderObject as RenderBox;
       items.add(_boundingBox(renderBox));
     } else {
@@ -244,8 +244,16 @@ class WidgetWalker {
 
   @pragma('vm:prefer-inline')
   Rect _boundingBox(RenderBox box) {
-    final transform = box.getTransformTo(_root);
-    return MatrixUtils.transformRect(transform, box.paintBounds);
+    assert(box.hasSize);
+    final Offset offset = box.localToGlobal(Offset.zero);
+    return Rect.fromLTWH(
+      offset.dx,
+      offset.dy,
+      box.size.width,
+      box.size.height,
+    );
+    // final transform = box.getTransformTo(_root);
+    // return MatrixUtils.transformRect(transform, box.paintBounds);
   }
 }
 
