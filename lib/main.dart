@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:collection';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -116,22 +120,133 @@ Future<void> main(List<String> rawArgs) async {
       await WindowManagerTools.initialize();
     }
 
-    SentryFlutter.init((options) {
-      options.dsn =
-          'https://e85b375ffb9f43cf8bdf9787768149e0@o447951.ingest.sentry.io/5428562';
-      options.experimental.replay.sessionSampleRate = 1.0;
-      options.debug = kDebugMode;
-    },
-        appRunner: () => runApp(ProviderScope(
-              overrides: [
-                databaseProvider.overrideWith((ref) => database),
-              ],
-              observers: const [
-                AppLoggerProviderObserver(),
-              ],
-              child: const SentryWidget(child: Spotube()),
-            )));
+    // SentryFlutter.init((options) {
+    //   options.dsn =
+    //       'https://e85b375ffb9f43cf8bdf9787768149e0@o447951.ingest.sentry.io/5428562';
+    //   options.experimental.replay.sessionSampleRate = 1.0;
+    //   // options.debug = kDebugMode;
+    // },
+    //     appRunner: () =>
+    runApp(ProviderScope(
+      overrides: [
+        databaseProvider.overrideWith((ref) => database),
+      ],
+      observers: const [
+        AppLoggerProviderObserver(),
+      ],
+      child: RepaintBoundary(
+    key: globalKey,
+    child: const Spotube()),
+    ));
   });
+  Future.delayed(const Duration(milliseconds: 1), () {
+    SchedulerBinding.instance.addPersistentFrameCallback((_) {
+      capture();
+    });
+  });
+}
+
+final globalKey = GlobalKey();
+final Future<String> screenshotsDir =
+    getApplicationDocumentsDirectory().then((appDir) async {
+  final dir = Directory("${appDir.path}/app-screenshots");
+  if (await dir.exists()) {
+    await dir.delete(recursive: true);
+  }
+  await dir.create();
+  return dir.path;
+});
+List<Rect>? prevPositions;
+
+void capture() {
+  final context = globalKey.currentContext;
+  final renderObject = context?.findRenderObject() as RenderRepaintBoundary?;
+  if (renderObject == null) {
+    return;
+  }
+
+  final futureImage = renderObject.toImage();
+  final walker = WidgetWalker();
+  walker.obscure(root: renderObject, context: context!);
+  final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+  if (!listEquals(prevPositions, walker.items)) {
+    futureImage.then((image) async {
+      final recorder = PictureRecorder();
+      final canvas = Canvas(recorder);
+
+      final image = await futureImage;
+      final width = image.width;
+      final height = image.height;
+      try {
+        canvas.drawImage(image, Offset.zero, Paint());
+      } finally {
+        image.dispose();
+      }
+
+      for (var item in walker.items) {
+        canvas.drawRect(
+            item,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..color = Colors.red
+              ..strokeWidth = height / 100);
+      }
+
+      final picture = recorder.endRecording();
+      try {
+        final outputImage = await picture.toImage(width, height);
+        final byteData =
+            await outputImage.toByteData(format: ImageByteFormat.png);
+        final file = File('${await screenshotsDir}/$timestamp.png');
+        await file.writeAsBytes(byteData!.buffer.asUint8List());
+      } finally {
+        picture.dispose();
+      }
+    });
+    prevPositions = walker.items;
+  }
+}
+
+class WidgetWalker {
+  final items = <Rect>[];
+  late RenderObject _root;
+  final _visitList = DoubleLinkedQueue<Element>();
+
+  void obscure({
+    required RenderRepaintBoundary root,
+    required BuildContext context,
+  }) {
+    _root = root;
+
+    // clear the output list
+    items.clear();
+
+    // Reset the list of elements we're going to process.
+    // Then do a breadth-first tree traversal on all the widgets.
+    _visitList.clear();
+    context.visitChildElements(_visitList.add);
+    while (_visitList.isNotEmpty) {
+      _process(_visitList.removeFirst());
+    }
+  }
+
+  void _process(Element element) {
+    final widget = element.widget;
+
+    if (widget is Text) {
+      final RenderBox renderBox = element.renderObject as RenderBox;
+      items.add(_boundingBox(renderBox));
+    } else {
+      element.debugVisitOnstageChildren(_visitList.add);
+    }
+  }
+
+  @pragma('vm:prefer-inline')
+  Rect _boundingBox(RenderBox box) {
+    final transform = box.getTransformTo(_root);
+    return MatrixUtils.transformRect(transform, box.paintBounds);
+  }
 }
 
 class Spotube extends HookConsumerWidget {
