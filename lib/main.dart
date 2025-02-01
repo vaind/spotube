@@ -133,7 +133,7 @@ Future<void> main(List<String> rawArgs) async {
       observers: const [
         AppLoggerProviderObserver(),
       ],
-      child: RepaintBoundary(key: globalKey, child: const Spotube()),
+      child: const Spotube(),
     ));
   });
   SchedulerBinding.instance.addPostFrameCallback(capture);
@@ -309,82 +309,84 @@ class Spotube extends HookConsumerWidget {
       [paletteColor, accentMaterialColor, isAmoledTheme],
     );
 
-    return MaterialApp.router(
-      supportedLocales: L10n.all,
-      locale: locale.languageCode == "system" ? null : locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      routerConfig: router,
-      debugShowCheckedModeBanner: false,
-      title: 'Spotube',
-      builder: (context, child) {
-        child = ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            dragDevices: hasTouchSupport
-                ? {
-                    PointerDeviceKind.touch,
-                    PointerDeviceKind.stylus,
-                    PointerDeviceKind.invertedStylus,
-                  }
-                : null,
-          ),
-          child: child!,
-        );
+    return RepaintBoundary(
+        key: globalKey,
+        child: MaterialApp.router(
+          supportedLocales: L10n.all,
+          locale: locale.languageCode == "system" ? null : locale,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          routerConfig: router,
+          debugShowCheckedModeBanner: false,
+          title: 'Spotube',
+          builder: (context, child) {
+            child = ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: hasTouchSupport
+                    ? {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.stylus,
+                        PointerDeviceKind.invertedStylus,
+                      }
+                    : null,
+              ),
+              child: child!,
+            );
 
-        if (kIsDesktop && !kIsMacOS) child = DragToResizeArea(child: child);
+            if (kIsDesktop && !kIsMacOS) child = DragToResizeArea(child: child);
 
-        return child;
-      },
-      themeMode: themeMode,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      shortcuts: {
-        ...WidgetsApp.defaultShortcuts.map((key, value) {
-          return MapEntry(
-            LogicalKeySet.fromSet(key.triggers?.toSet() ?? {}),
-            value,
-          );
-        }),
-        LogicalKeySet(LogicalKeyboardKey.space): PlayPauseIntent(ref),
-        LogicalKeySet(LogicalKeyboardKey.comma, LogicalKeyboardKey.control):
-            NavigationIntent(router, "/settings"),
-        LogicalKeySet(
-          LogicalKeyboardKey.digit1,
-          LogicalKeyboardKey.control,
-          LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.browse),
-        LogicalKeySet(
-          LogicalKeyboardKey.digit2,
-          LogicalKeyboardKey.control,
-          LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.search),
-        LogicalKeySet(
-          LogicalKeyboardKey.digit3,
-          LogicalKeyboardKey.control,
-          LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.library),
-        LogicalKeySet(
-          LogicalKeyboardKey.digit4,
-          LogicalKeyboardKey.control,
-          LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
-        LogicalKeySet(
-          LogicalKeyboardKey.keyW,
-          LogicalKeyboardKey.control,
-          LogicalKeyboardKey.shift,
-        ): CloseAppIntent(),
-      },
-      actions: {
-        ...WidgetsApp.defaultActions,
-        PlayPauseIntent: PlayPauseAction(),
-        NavigationIntent: NavigationAction(),
-        HomeTabIntent: HomeTabAction(),
-        CloseAppIntent: CloseAppAction(),
-      },
-    );
+            return child;
+          },
+          themeMode: themeMode,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          shortcuts: {
+            ...WidgetsApp.defaultShortcuts.map((key, value) {
+              return MapEntry(
+                LogicalKeySet.fromSet(key.triggers?.toSet() ?? {}),
+                value,
+              );
+            }),
+            LogicalKeySet(LogicalKeyboardKey.space): PlayPauseIntent(ref),
+            LogicalKeySet(LogicalKeyboardKey.comma, LogicalKeyboardKey.control):
+                NavigationIntent(router, "/settings"),
+            LogicalKeySet(
+              LogicalKeyboardKey.digit1,
+              LogicalKeyboardKey.control,
+              LogicalKeyboardKey.shift,
+            ): HomeTabIntent(ref, tab: HomeTabs.browse),
+            LogicalKeySet(
+              LogicalKeyboardKey.digit2,
+              LogicalKeyboardKey.control,
+              LogicalKeyboardKey.shift,
+            ): HomeTabIntent(ref, tab: HomeTabs.search),
+            LogicalKeySet(
+              LogicalKeyboardKey.digit3,
+              LogicalKeyboardKey.control,
+              LogicalKeyboardKey.shift,
+            ): HomeTabIntent(ref, tab: HomeTabs.library),
+            LogicalKeySet(
+              LogicalKeyboardKey.digit4,
+              LogicalKeyboardKey.control,
+              LogicalKeyboardKey.shift,
+            ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
+            LogicalKeySet(
+              LogicalKeyboardKey.keyW,
+              LogicalKeyboardKey.control,
+              LogicalKeyboardKey.shift,
+            ): CloseAppIntent(),
+          },
+          actions: {
+            ...WidgetsApp.defaultActions,
+            PlayPauseIntent: PlayPauseAction(),
+            NavigationIntent: NavigationAction(),
+            HomeTabIntent: HomeTabAction(),
+            CloseAppIntent: CloseAppAction(),
+          },
+        ));
   }
 }
