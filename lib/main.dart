@@ -3,6 +3,8 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:posthog_flutter/posthog_flutter.dart';
+import 'package:posthog_flutter/src/replay/mask/posthog_mask_controller.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +141,7 @@ Future<void> main(List<String> rawArgs) async {
   SchedulerBinding.instance.addPostFrameCallback(capture);
 }
 
-final globalKey = GlobalKey();
+final globalKey = PostHogMaskController.instance.containerKey; //GlobalKey();
 final Future<String> screenshotsDir =
     getApplicationDocumentsDirectory().then((appDir) async {
   final dir = Directory("${appDir.path}/app-screenshots");
@@ -309,8 +311,9 @@ class Spotube extends HookConsumerWidget {
       [paletteColor, accentMaterialColor, isAmoledTheme],
     );
 
-    return RepaintBoundary(
-        key: globalKey,
+    return PostHogWidget(
+    // return RepaintBoundary(
+    //     key: globalKey,
         child: MaterialApp.router(
           supportedLocales: L10n.all,
           locale: locale.languageCode == "system" ? null : locale,

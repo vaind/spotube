@@ -1827,6 +1827,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
+  posthog_flutter:
+    dependency: "direct main"
+    description:
+      path: "../posthog-flutter"
+      relative: true
+    source: path
+    version: "4.10.0"
   process:
     dependency: transitive
     description:
