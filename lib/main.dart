@@ -151,10 +151,9 @@ final Future<String> screenshotsDir =
 });
 List<Rect>? prevPositions;
 
-void capture(Duration _) {
+void capture(Duration _) async {
   SchedulerBinding.instance.addPostFrameCallback(capture);
   final timestamp = DateTime.now().millisecondsSinceEpoch;
-
   final context = globalKey.currentContext;
   final renderObject = context?.findRenderObject() as RenderRepaintBoundary?;
   if (renderObject == null) {
@@ -181,7 +180,7 @@ void capture(Duration _) {
       // Weirdly, dumping the image data seems to prevent this issue...
       {
         // we do so in a block so it can be GC'ed early.
-        final _ = image.toByteData();
+        final _ = await image.toByteData();
       }
 
       final recorder = PictureRecorder();
@@ -204,10 +203,14 @@ void capture(Duration _) {
       final picture = recorder.endRecording();
       try {
         final outputImage = await picture.toImage(width, height);
-        final byteData =
-            await outputImage.toByteData(format: ImageByteFormat.png);
-        final file = File('${await screenshotsDir}/$timestamp.png');
-        await file.writeAsBytes(byteData!.buffer.asUint8List());
+        try {
+          final byteData =
+              await outputImage.toByteData(format: ImageByteFormat.png);
+          final file = File('${await screenshotsDir}/$timestamp.png');
+          await file.writeAsBytes(byteData!.buffer.asUint8List());
+        } finally {
+          outputImage.dispose();
+        }
       } finally {
         picture.dispose();
       }
